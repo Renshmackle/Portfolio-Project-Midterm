@@ -20,81 +20,101 @@
         </v-btn>
       </div>
       
-      <!-- Mobile Menu Button -->
-      <v-app-bar-nav-icon 
-        @click.stop="drawer = !drawer" 
-        class="hidden-md-and-up" 
-        color="white"
-      ></v-app-bar-nav-icon>
+      <!-- Mobile Menu Toggle Button -->
+      <v-btn
+        @click="isMenuOpen = true"
+        icon
+        class="hidden-md-and-up"
+      >
+        <v-icon color="#ffbd39">mdi-menu</v-icon>
+      </v-btn>
     </v-app-bar>
 
-    <v-navigation-drawer
-      v-model="drawer"
-      absolute
-      temporary
-      right
-      :style="{ background: '#000000' }"
+    <!-- Mobile Menu Overlay -->
+    <v-overlay
+      v-model="isMenuOpen"
+      class="mobile-menu-overlay"
+      :opacity="0.8"
+      :scrim="false"
     >
-      <v-list>
-        <v-list-item
-          v-for="item in menuItems"
-          :key="item.title"
-          :href="item.href"
-          @click="scrollToSection(item.href.substring(1))"
-          link
-        >
-          <v-list-item-content>
-            <v-list-item-title 
-              :class="['menu-item', { 'yellow--text': activeSection === item.href.substring(1) }]"
+      <v-container class="fill-height">
+        <v-row align="center" justify="center">
+          <v-col cols="12" class="text-center">
+            <v-btn
+              icon
+              @click="isMenuOpen = false"
+              class="close-btn mb-6"
             >
-              {{ item.title }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+              <v-icon large color="#ffbd39">mdi-close</v-icon>
+            </v-btn>
+            <v-list nav class="mobile-menu-list">
+              <v-list-item
+                v-for="item in menuItems"
+                :key="item.title"
+                @click="scrollToSection(item.href.substring(1))"
+                link
+              >
+                <v-list-item-title
+                  class="text-h4 mb-4 mobile-menu-item"
+                  :class="{ 'yellow--text': activeSection === item.href.substring(1) }"
+                  :style="{ color: activeSection !== item.href.substring(1) ? '#FFFFFF' : '' }"
+                >
+                  {{ item.title }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-overlay>
 
     <v-main>
-      <!-- Hero Section -->
-      <section id="home" class="hero d-flex align-center">
-        <v-container fluid>
-          <v-row align="center" justify="space-between" no-gutters>
-            <v-col cols="12" md="6" class="pa-6">
-              <p class="text-h6 mb-2 yellow--text">HELLO!</p>
-              <h1 class="text-h2 font-weight-bold mb-2" :style="{ color: '#FFFFFF' }">
-                I'm <span class="yellow--text">Lawrence</span>
-              </h1>
-              <h1 class="text-h2 font-weight-bold mb-4 yellow--text">
-                Sabrido
-              </h1>
-              <p class="text-h5 mb-8" :style="{ color: '#FFFFFF' }">A BSIT III Student</p>
-              <v-btn
-                color="#ffbd39"
-                x-large
-                class="mr-4"
-                :style="{ color: '#000000' }"
-              >
-                HIRE ME
-              </v-btn>
-              <v-btn
-                outlined
-                x-large
-                :style="{ borderColor: '#FFFFFF', color: '#FFFFFF' }"
-              >
-                MY WORKS
-              </v-btn>
-            </v-col>
-            <v-col cols="12" md="6" class="d-none d-md-flex justify-center align-center">
+     <!-- Hero Section -->
+     <section id="home" class="hero d-flex align-center">
+      <v-container fluid>
+        <v-row align="center" justify="space-between" no-gutters>
+          <v-col cols="12" md="6" class="pa-6 text-center">
+            <transition name="fade-slide" mode="out-in">
+              <div :key="currentPage">
+                <p class="text-h6 mb-2 yellow--text">{{ pages[currentPage].subtitle }}</p>
+                <h1 class="text-h2 font-weight-bold mb-2" :style="{ color: '#FFFFFF' }">
+                  {{ pages[currentPage].title }}
+                </h1>
+                <p class="text-h5 mb-8" :style="{ color: '#FFFFFF' }">{{ pages[currentPage].description }}</p>
+                <v-btn
+                  color="#ffbd39"
+                  x-large
+                  class="mr-4"
+                  :style="{ color: '#000000' }"
+                  @click="handleCtaClick"
+                >
+                  {{ pages[currentPage].cta }}
+                </v-btn>
+                <v-btn
+                  outlined
+                  x-large
+                  :style="{ borderColor: '#FFFFFF', color: '#000000' }"
+                  @click="scrollToSection('projects')"
+                >
+                  MY WORKS
+                </v-btn>
+              </div>
+            </transition>
+          </v-col>
+          <v-col cols="12" md="6" class="d-none d-md-flex justify-center align-center">
+            <transition name="fade-slide" mode="out-in">
               <v-img
-                src="../public/images/me.png"
+                :key="currentPage"
+                :src="pages[currentPage].image"
                 alt="Lawrence Sabrido"
                 max-height="600"
                 contain
               ></v-img>
-            </v-col>
-          </v-row>
-        </v-container>
-      </section>
+            </transition>
+          </v-col>
+        </v-row>
+      </v-container>
+    </section>
 
       <!-- About Section -->
       <section id="about" class="py-12" :style="{ background: '#000000' }">
@@ -189,10 +209,10 @@
                     <v-card-title class="text-h5">{{ project.title }}</v-card-title>
                   </v-img>
                   <v-card-text>
-                    <div>{{ project.description }}</div>
+                    <div >{{ project.description }}</div>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn :color="'#ffbd39'" text :href="project.link" target="_blank" :style="{ color: '#000000' }">
+                    <v-btn :color="'#ffbd39'" text :href="project.link" target="_blank" :style="{ color: '#ffbd39' }">
                       <v-icon left>mdi-open-in-new</v-icon>
                       View Project
                     </v-btn>
@@ -204,7 +224,7 @@
                   <v-expand-transition>
                     <div v-show="project.show">
                       <v-divider></v-divider>
-                      <v-card-text>
+                      <v-card-text :style="{ textAlign: 'justify' }">
                         <v-icon :color="'#ffbd39'" small left>mdi-information</v-icon>
                         {{ project.details }}
                       </v-card-text>
@@ -218,49 +238,50 @@
       </section>
 
       <!-- Skills Section -->
-      <section id="skills" class="py-12" :style="{ background: '#000000' }">
-        <v-container>
-          <h2 class="text-h2 font-weight-bold mb-6 text-center" :style="{ color: '#FFFFFF' }">My Skills</h2>
-          <p class="text-body-1 mb-8 text-center" :style="{ color: '#FFFFFF', maxWidth: '800px', margin: '0 auto' }">
-            I have a diverse set of web development and programming skills that enable me to build functional, dynamic websites and applications.
-          </p>
-          <v-row>
-            <v-col v-for="skill in skills" :key="skill.name" cols="12" sm="6">
-              <div class="d-flex align-center mb-2">
-                <v-icon :color="'#ffbd39'" class="mr-2">{{ skill.icon }}</v-icon>
-                <span class="text-h6" :style="{ color: '#FFFFFF' }">{{ skill.name }}</span>
-                <span class="ml-auto" :style="{ color: '#ffbd39' }">{{ skill.level }}%</span>
-              </div>
-              <div class="progress-bar-container">
-                <div 
-                  class="progress-bar" 
-                  :style="{ width: `${skill.level}%` }"
-                  :aria-valuenow="skill.level"
-                  :aria-valuemin="0"
-                  :aria-valuemax="100"
-                  role="progressbar"
-                ></div>
-              </div>
-            </v-col>
-          </v-row>
-        </v-container>
-      </section>
+  <section id="skills" class="py-12" :style="{ background: '#000000' }">
+    <v-container>
+      <h2 class="text-h2 font-weight-bold mb-6 text-center" :style="{ color: '#FFFFFF' }">My Skills</h2>
+      <p class="text-body-1 mb-8 text-center" :style="{ color: '#FFFFFF', maxWidth: '800px', margin: '0 auto' }">
+        I have a diverse set of web development and programming skills that enable me to build functional, dynamic websites and applications.
+      </p>
+      <v-row>
+        <v-col v-for="skill in skills" :key="skill.name" cols="12" sm="6">
+          <div class="d-flex align-center mb-2">
+            <v-icon :color="'#ffbd39'" class="mr-2">{{ skill.icon }}</v-icon>
+            <span class="text-h6" :style="{ color: '#FFFFFF' }">{{ skill.name }}</span>
+            <span class="ml-auto" :style="{ color: '#ffbd39' }">{{ skill.level }}%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div 
+              class="progress-bar" 
+              :style="{ width: `${skill.level}%` }"
+              :aria-valuenow="skill.level"
+              :aria-valuemin="0"
+              :aria-valuemax="100"
+              role="progressbar"
+            ></div>
+          </div>
+        </v-col>
+      </v-row>
+    </v-container>
+  </section>
+
 
       <!-- Contact Section -->
       <section id="contact" class="py-12 contact-section">
         <v-container fluid class="pa-0">
           <v-img
-            src="../public/images/bg_2.jpg"
+            src="/images/bg_2.jpg"
             height="100vh"
             width="100%"
             class="contact-image"
           >
             <v-row class="fill-height" align="center" justify="center">
               <v-col cols="12" md="8" class="text-center">
-                <h2 class="text-h2 font-weight-bold mb-6 full-white-text">
-                  I'm <span class="highlight-text">Available</span> for Freelancing
+                <h2 class="text-h2 font-weight-bold mb-6 full-white-text" :style="{ color: '#FFFFFF' }">
+                  I'm <span class="highlight-text" :style="{ color: '#ffbd39'}">Available</span> for Freelancing
                 </h2>
-                <p class="text-h5 mb-8 full-white-text">If you're looking for a dedicated and experienced developer to bring your ideas to life, let's connect!</p>
+                <p class="text-h5 mb-8 full-white-text" :style="{ color: '#FFFFFF' }">If you're looking for a dedicated and experienced developer to bring your ideas to life, let's connect!</p>
                 <v-btn
                   color="#ffbd39"
                   x-large
@@ -275,38 +296,52 @@
         </v-container>
       </section>
 
-      <!-- Hire Me Dialog -->
-      <v-dialog
-        v-model="dialog"
-        max-width="400"
+  <!-- Hire Me Dialog -->
+  <v-dialog
+  v-model="dialog"
+  max-width="400"
+  transition="dialog-bottom-transition"
+>
+  <v-card class="hire-me-dialog">
+    <v-card-title class="headline text-center pa-6">
+      <span class="elegant-title" :style="{ color: '#ffbd39'}">Let's Connect</span>
+      <v-btn
+        icon
+        @click="dialog = false"
+        class="close-btn"
       >
-        <v-card>
-          <v-card-title class="headline">Contact Me</v-card-title>
-          <v-card-text>
-            <v-list>
-              <v-list-item v-for="(item, index) in contactInfo" :key="index" :href="item.link" target="_blank">
-                <v-list-item-icon>
-                  <v-icon :color="item.color">{{ item.icon }}</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>{{ item.title }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              text
-              @click="dialog = false"
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+    </v-card-title>
+    <v-card-text class="pt-6">
+      <v-row justify="center">
+        <v-col cols="12">
+          <div class="text-center mb-6">
+            <p class="subtitle-1">I'm excited to discuss how we can work together on your next project!</p>
+          </div>
+          <v-list class="contact-list">
+            <v-list-item
+              v-for="(item, index) in contactInfo"
+              :key="index"
+              :href="item.link"
+              target="_blank"
+              class="mb-4 contact-item"
             >
-              Close
-            
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+              <v-list-item-icon class="mr-4">
+                <v-avatar size="40" :color="item.color">
+                  <v-icon dark>{{ item.icon }}</v-icon>
+                </v-avatar>
+              </v-list-item-icon>
+              <v-list-item-content class="text-center">
+                <v-list-item-title class="text-h6 font-weight-medium">{{ item.title }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
+</v-dialog>
     </v-main>
 
     <v-footer :style="{ background: '#000000' }" class="py-4">
@@ -340,7 +375,7 @@
             <h3 class="text-h6 font-weight-bold mb-4" :style="{ color: '#FFFFFF' }">Have Questions?</h3>
             <p :style="{ color: '#FFFFFF' }">203 Taglatawan St, Bayugan City, Agusan Del Sur, PH</p>
             <p :style="{ color: '#FFFFFF' }">+2 392 3929 210</p>
-            <p :style="{ color: '#FFFFFF' }">info@yourdomain.com</p>
+            <p :style="{ color: '#FFFFFF' }">renzsabrido1@gmail.com</p>
           </v-col>
         </v-row>
         <v-divider class="my-4" :style="{ background: '#FFFFFF' }"></v-divider>
@@ -374,7 +409,15 @@ export default {
       { title: 'Contact', href: '#contact' },
     ]
 
-    const drawer = ref(false)
+    const handleCtaClick = () => {
+      if (currentPage.value === 0) {
+        scrollToSection('contact');
+      } else {
+        scrollToSection('contact');
+      }
+    };
+
+    const isMenuOpen = ref(false)
     const activeSection = ref('home')
     const dialog = ref(false)
     const isScrolled = ref(false)
@@ -382,29 +425,38 @@ export default {
     const scrollToSection = (sectionId) => {
       const element = document.getElementById(sectionId)
       if (element) {
-        const navbarHeight = document.querySelector('.v-app-bar').offsetHeight
-        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
-        const offsetPosition = elementPosition - navbarHeight
+        isMenuOpen.value = false
+        setTimeout(() => {
+          const navbarHeight = document.querySelector('.v-app-bar').offsetHeight
+          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+          const offsetPosition = elementPosition - navbarHeight
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        })
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          })
+          
+          // Set the active section immediately after scrolling
+          activeSection.value = sectionId
+        }, 300)
       }
-      drawer.value = false
-      activeSection.value = sectionId
     }
 
     const handleScroll = () => {
       const sections = menuItems.map(item => item.href.substring(1))
-      const currentSection = sections.find(section => {
+      let currentSection = ''
+      
+      for (const section of sections) {
         const element = document.getElementById(section)
         if (element) {
           const rect = element.getBoundingClientRect()
-          return rect.top <= 50 && rect.bottom > 50
+          if (rect.top <= 100 && rect.bottom > 100) {
+            currentSection = section
+            break
+          }
         }
-        return false
-      })
+      }
+      
       if (currentSection) {
         activeSection.value = currentSection
       }
@@ -416,32 +468,57 @@ export default {
       handleScroll() // Initial check
     })
 
+    const currentPage = ref(0);
+    const pages = [
+      {
+        title: "I'm Lawrence",
+        subtitle: "HELLO!",
+        description: "An Information Technology Student",
+        cta: "HIRE ME",
+        image: '/images/me.png'
+      },
+      {
+        title: "Let's Work Together",
+        subtitle: "Building the Future",
+        description: "I'm passionate about web development and technology.",
+        cta: "CONTACT ME",
+        image: '/images/bg_2.jpg'
+      },
+    ];
+
+    // Automatically toggle pages every 5 seconds
+    onMounted(() => {
+      setInterval(() => {
+        currentPage.value = currentPage.value === 0 ? 1 : 0;
+      }, 5000);
+    });
+
     const projects = reactive([
-      {
-        title: 'Text-Based Game',
-        description: ' A digital platform that offers engaging text-based adventures where users can make choices that influence the storyline.',
-        details: 'Features include product catalog, shopping cart, user authentication, and payment integration.',
-        image: '/images/project-1.png',
-        link: 'https://example.com/ecommerce',
-        show: false,
-      },
-      {
-        title: 'Calculator',
-        description: 'An online calculator designed to perform a wide range of mathematical operations quickly and accurately.',
-        details: 'Built with Vue.js and Vuex for state management. Includes features like task categorization, due dates, and progress tracking.',
-        image: '/images/project-4.png',
-        link: 'https://example.com/task-manager',
-        show: false,
-      },
-      {
-        title: 'Attendance Management System',
-        description: 'A comprehensive system for tracking and managing attendance in educational or organizational settings.',
-        details: 'Utilizes a weather API to provide current conditions and forecasts. Built with Vue.js and Chart.js for data visualization.',
-        image: '/images/project-5.png',
-        link: 'https://example.com/weather-app',
-        show: false,
-      },
-    ])
+  {
+    title: 'Text-Based Game',
+    description: 'A digital platform that offers engaging text-based adventures where users can make choices that influence the storyline.',
+    details: 'Built with JavaScript for game logic, allowing players to navigate through different story paths based on their choices. Features include dynamic responses and AI-powered story progression.',
+    image: '/images/project-1.png',
+    link: 'https://example.com/text-based-game',
+    show: false,
+  },
+  {
+    title: 'Calculator',
+    description: 'A Calculator application that performs basic arithmetic operations with a user-friendly interface and basic UI design.',
+    details: 'Built using HTML, CSS, and JavaScript. Features basic arithmetic functions and error handling for user-friendly calculations.',
+    image: '/images/project-4.png',
+    link: 'https://example.com/calculator',
+    show: false,
+  },
+  {
+    title: 'Attendance Management System',
+    description: 'An Attendance Management System that helps track and manage attendance records for students or employees.',
+    details: 'Developed with Laravel and SQL for backend functionality. Allows users to track attendance, view logs, and generate reports with data visualization.',
+    image: '/images/project-5.png',
+    link: 'https://example.com/attendance-system',
+    show: false,
+  },
+])
     
     const skills = reactive([
       { name: 'HTML', icon: 'mdi-language-html5', level: 0 },
@@ -465,8 +542,8 @@ export default {
       setTimeout(() => {
         skills.forEach((skill, index) => {
           const targetLevel = finalSkillLevels[index].level
-          const duration = 1500 // Animation duration in milliseconds
-          const steps = 60 // Number of steps in the animation
+          const duration = 1500 
+          const steps = 60
           const increment = targetLevel / steps
           let currentStep = 0
 
@@ -479,19 +556,19 @@ export default {
             }
           }, duration / steps)
         })
-      }, 500) // Delay the start of the animation by 500ms
+      }, 500)
     })
 
     const contactInfo = [
-      { title: 'Facebook', icon: 'mdi-facebook', color: '#1877F2', link: 'https://www.facebook.com/yourusername' },
-      { title: 'GitHub', icon: 'mdi-github', color: '#333', link: 'https://github.com/yourusername' },
-      { title: 'LinkedIn', icon: 'mdi-linkedin', color: '#0A66C2', link: 'https://www.linkedin.com/in/yourusername' },
-      { title: 'Instagram', icon: 'mdi-instagram', color: '#E4405F', link: 'https://www.instagram.com/yourusername' },
+      { title: 'Facebook', icon: 'mdi-facebook', color: '#1877F2', link: 'https://www.facebook.com/angel.sabrido' },
+      { title: 'GitHub', icon: 'mdi-github', color: '#333', link: 'https://github.com/Renshmackle' },
+      { title: 'LinkedIn', icon: 'mdi-linkedin', color: '#0A66C2', link: 'https://www.linkedin.com/in/renz-sabrido-53077318a' },
+      { title: 'Instagram', icon: 'mdi-instagram', color: '#E4405F', link: 'https://www.instagram.com/rnzz_brdzz/' },
     ] 
 
     const socialIcons = [
-      { name: 'GitHub', icon: 'mdi-github', link: 'https://github.com' },
-      { name: 'LinkedIn', icon: 'mdi-linkedin', link: 'https://linkedin.com' },
+      { name: 'GitHub', icon: 'mdi-github', link: 'https://github.com/Renshmackle' },
+      { name: 'LinkedIn', icon: 'mdi-linkedin', link: 'https://www.linkedin.com/in/renz-sabrido-53077318a' },
       { name: 'Twitter', icon: 'mdi-twitter', link: 'https://twitter.com' },
     ]
 
@@ -508,13 +585,18 @@ export default {
     const displayedProjects = ref(0)
 
     const downloadCV = () => {
-      // Implement CV download functionality here
+      const link = document.createElement('a');
+      link.href = '/Sab_Resume.pdf';
+      link.download = 'Lawrence_Sabrido_CV.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       console.log('Downloading CV...')
     }
 
     onMounted(() => {
-      const duration = 2000 // Animation duration in milliseconds
-      const steps = 30 // Number of steps in the animation
+      const duration = 2000 
+      const steps = 30 
       const stepDuration = duration / steps
 
       const animate = () => {
@@ -550,9 +632,12 @@ export default {
       menuItems,
       activeSection,
       scrollToSection,
-      drawer,
+      handleCtaClick,
+      isMenuOpen,
       projects,
       skills,
+      currentPage, 
+      pages,  
       dialog,
       contactInfo,
       socialIcons,
@@ -568,10 +653,6 @@ export default {
 </script>
 
 <style>
-body {
-  font-family: 'Bowlby One', sans-serif !important;
-}
-
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Bowlby One', sans-serif !important;
 }
@@ -587,6 +668,10 @@ p {
 .glass-effect {
   background-color: rgba(0, 0, 0, 0.7) !important;
   backdrop-filter: blur(10px);
+}
+
+.v-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .nav-btn {
@@ -615,6 +700,10 @@ p {
   color: #ffbd39 !important;
 }
 
+.nav-btn:not(.active-section) {
+  color: #ffffff !important;
+}
+
 .nav-btn:hover::after {
   width: 100%;
   left: 0;
@@ -624,11 +713,55 @@ p {
   color: #ffbd39 !important;
 }
 
+.mobile-menu-overlay {
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px);
+}
+
+.mobile-menu-list {
+  background: transparent !important;
+  width: 100vw;
+}
+
+.mobile-menu-item {
+  color: #FFFFFF !important;
+  transition: color 0.3s ease;
+}
+
+.mobile-menu-item:hover {
+  color: #ffbd39 !important;
+}
+
+.v-overlay__content {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+.v-overlay__scrim {
+  background: transparent !important;
+  backdrop-filter: blur(10px);
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
 .hero {
   background: #000000;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+}
+
+.fade-slide-enter-active, .fade-slide-leave-active {
+  transition: all 0.8s ease;
+}
+.fade-slide-enter, .fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
 @media (max-width: 960px) {
@@ -665,16 +798,35 @@ p {
 }
 
 .menu-item {
-  display: inline-block;
-  padding-bottom: 5px;
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  transition: background-color 0.3s ease;
 }
 
-.v-navigation-drawer {
-  padding-top: 60px;
+.menu-item:hover {
+  background-color: rgba(255, 189, 57, 0.1);
 }
 
-.v-list-item {
-  margin-bottom: 10px;
+.mobile-menu-overlay {
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px);
+}
+
+.mobile-menu-list {
+  background: transparent !important;
+  width: 100vw;
+}
+
+.v-overlay__content {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+.v-overlay__scrim {
+  background: transparent !important;
+  backdrop-filter: blur(10px);
 }
 
 .hero {
@@ -696,8 +848,10 @@ p {
   transform: translateY(-5px);
 }
 
-.v-btn {
-  text-transform: none;
+.v-progress-linear {
+  border-radius: 5px;
+  height: 10px;
+  overflow: hidden;
 }
 
 .progress-bar-container {
@@ -713,53 +867,88 @@ p {
   transition: width 1.5s ease-out;
 }
 
-.contact-section {
+.hire-me-dialog {
+  background-color: rgba(30, 30, 30, 0.8);
+  backdrop-filter: blur(10px);
+  color: #FFFFFF;
+  border-radius: 16px;
+  overflow: hidden;
   position: relative;
 }
 
-.contact-image::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-
-.full-white-text {
-  color: #FFFFFF !important;
-}
-
-.highlight-text {
-  color: #ffbd39 !important;
-}
-
-.black-text {
-  color: #000000 !important;
-}
-
-.contact-image {
+.hire-me-dialog .v-card__title {
+  background: linear-gradient(135deg, rgba(255, 189, 57, 0.8) 0%, rgba(255, 157, 0, 0.8) 100%);
+  color: #000000;
   position: relative;
 }
 
-.contact-image::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3); 
-  z-index: 1;
+.elegant-title {
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-.contact-image .v-image__image {
-  filter: none; 
+
+.hire-me-dialog .v-list {
+  background-color: transparent;
 }
 
-.contact-image .v-responsive__content {
-  position: relative;
-  z-index: 2;
+.contact-list {
+  padding: 0;
+}
+
+.contact-item {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.contact-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.contact-item .v-list-item__icon {
+  margin-right: 16px;
+}
+
+.contact-item .v-list-item__content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.v-list-item__title {
+  color: #FFFFFF;
+  font-weight: 500;
+}
+
+.hire-me-btn {
+  background: linear-gradient(135deg, #ffbd39 0%, #ff9d00 100%);
+  color: #000000;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.hire-me-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 189, 57, 0.3);
+}
+
+/* Add this to your existing styles */
+.dialog-bottom-transition-enter-active,
+.dialog-bottom-transition-leave-active {
+  transition: transform 0.3s ease-in-out;
+}
+
+.dialog-bottom-transition-enter,
+.dialog-bottom-transition-leave-to {
+  transform: translateY(100%);
 }
 </style>
