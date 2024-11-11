@@ -698,7 +698,7 @@ export default {
         subtitle: "BUILDING THE FUTURE",
         description: "I'm passionate about web development and technology.",
         cta: "CONTACT ME",
-        image: "/images/bg_2.jpg",
+        image: "/images/boy.png",
         isHtml: false,
       },
     ];
