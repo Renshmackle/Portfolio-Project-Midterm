@@ -1,10 +1,19 @@
 <template>
   <v-app :style="{ background: '#000000' }">
     <!-- Navigation -->
-    <v-app-bar app :class="{'glass-effect': isScrolled}" :style="{ backgroundColor: isScrolled ? 'transparent' : '#000000' }" elevate-on-scroll class="px-4">
-      <v-toolbar-title class="text-h4 font-weight-bold" :style="{ color: '#FFFFFF' }">RENZ</v-toolbar-title>
+    <v-app-bar
+      app
+      :class="{ 'glass-effect': isScrolled }"
+      :style="{ backgroundColor: isScrolled ? 'transparent' : '#000000' }"
+      elevate-on-scroll
+      class="px-4"
+    >
+      <v-toolbar-title class="text-h4">
+        LAWRENCE SABRIDO
+      </v-toolbar-title>
+
       <v-spacer></v-spacer>
-      
+
       <!-- Desktop Menu -->
       <div class="hidden-sm-and-down">
         <v-btn
@@ -12,20 +21,23 @@
           :key="item.title"
           :href="item.href"
           text
-          :color="activeSection === item.href.substring(1) ? '#ffbd39' : '#FFFFFF'"
-          :class="['nav-btn', 'mx-2', 'text-subtitle-1', { 'active-section': activeSection === item.href.substring(1) }]"
+          :color="
+            activeSection === item.href.substring(1) ? '#ffbd39' : '#FFFFFF'
+          "
+          :class="[
+            'nav-btn',
+            'mx-2',
+            'text-subtitle-1',
+            { 'active-section': activeSection === item.href.substring(1) },
+          ]"
           @click.prevent="scrollToSection(item.href.substring(1))"
         >
           {{ item.title }}
         </v-btn>
       </div>
-      
+
       <!-- Mobile Menu Toggle Button -->
-      <v-btn
-        @click="isMenuOpen = true"
-        icon
-        class="hidden-md-and-up"
-      >
+      <v-btn @click="isMenuOpen = true" icon class="hidden-md-and-up">
         <v-icon color="#ffbd39">mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
@@ -40,11 +52,7 @@
       <v-container class="fill-height">
         <v-row align="center" justify="center">
           <v-col cols="12" class="text-center">
-            <v-btn
-              icon
-              @click="isMenuOpen = false"
-              class="close-btn mb-6"
-            >
+            <v-btn icon @click="isMenuOpen = false" class="close-btn mb-4" style="position: absolute; top: 8px; right: 8px; background: none; border: none;">
               <v-icon large color="#ffbd39">mdi-close</v-icon>
             </v-btn>
             <v-list nav class="mobile-menu-list">
@@ -53,14 +61,32 @@
                 :key="item.title"
                 @click="scrollToSection(item.href.substring(1))"
                 link
+                class="mobile-menu-item"
               >
-                <v-list-item-title
-                  class="text-h4 mb-4 mobile-menu-item"
-                  :class="{ 'yellow--text': activeSection === item.href.substring(1) }"
-                  :style="{ color: activeSection !== item.href.substring(1) ? '#FFFFFF' : '' }"
-                >
-                  {{ item.title }}
-                </v-list-item-title>
+               <template v-slot:prepend>
+                <v-icon color="#ffbd39">mdi-chevron-right</v-icon>
+              </template>
+
+                <v-list-item-content>
+                  <v-list-item-title
+                    class="text-h5 mb-2 mobile-menu-item"
+                    :class="{
+                      'yellow--text': activeSection === item.href.substring(1),
+                    }"
+                    :style="{
+                      color:
+                        activeSection !== item.href.substring(1)
+                          ? '#FFFFFF'
+                          : '',
+                    }"
+                  >
+                    {{ item.title }}
+                  </v-list-item-title>
+                </v-list-item-content>
+
+                <template v-slot:append>
+                  <v-icon color="#ffbd39">mdi-chevron-left</v-icon>
+                </template>
               </v-list-item>
             </v-list>
           </v-col>
@@ -69,57 +95,82 @@
     </v-overlay>
 
     <v-main>
-     <!-- Hero Section -->
-     <section id="home" class="hero d-flex align-center">
-      <v-container fluid>
-        <v-row align="center" justify="space-between" no-gutters>
-          <v-col cols="12" md="6" class="pa-6 text-center">
-            <transition name="fade-slide" mode="out-in">
-              <div :key="currentPage">
-                <p class="text-h6 mb-2 yellow--text">{{ pages[currentPage].subtitle }}</p>
-                <h1 class="text-h2 font-weight-bold mb-2" :style="{ color: '#FFFFFF' }">
-                  {{ pages[currentPage].title }}
-                </h1>
-                <p class="text-h5 mb-8" :style="{ color: '#FFFFFF' }">{{ pages[currentPage].description }}</p>
-                <v-btn
-                  color="#ffbd39"
-                  x-large
-                  class="mr-4"
-                  :style="{ color: '#000000' }"
-                  @click="handleCtaClick"
-                >
-                  {{ pages[currentPage].cta }}
-                </v-btn>
-                <v-btn
-                  outlined
-                  x-large
-                  :style="{ borderColor: '#FFFFFF', color: '#000000' }"
-                  @click="scrollToSection('projects')"
-                >
-                  MY WORKS
-                </v-btn>
-              </div>
-            </transition>
-          </v-col>
-          <v-col cols="12" md="6" class="d-none d-md-flex justify-center align-center">
-            <transition name="fade-slide" mode="out-in">
-              <v-img
-                :key="currentPage"
-                :src="pages[currentPage].image"
-                alt="Lawrence Sabrido"
-                max-height="600"
-                contain
-              ></v-img>
-            </transition>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section>
+      <!-- Hero Section -->
+      <section id="home" class="hero d-flex align-center">
+        <v-container fluid>
+          <v-row align="center" justify="space-between" no-gutters>
+            <v-col cols="12" md="6" class="pa-6 text-center">
+              <transition name="fade-slide" mode="out-in">
+                <div :key="currentPage">
+                  <p class="text-h6 mb-2 yellow--text">
+                    {{ pages[currentPage].subtitle }}
+                  </p>
+                  <h1
+                    class="text-h2 font-weight-bold mb-2"
+                    v-if="pages[currentPage].isHtml"
+                    v-html="pages[currentPage].title"
+                  ></h1>
+                  <h1
+                    class="text-h2 mb-2"
+                    v-else
+                    :style="{ color: '#FFFFFF', fontWeight: '800' }"
+                  >
+                    {{ pages[currentPage].title }}
+                  </h1>
+                  <p
+                    class="text-h6 mb-8"
+                    :style="{ color: '#FFFFFF', fontWeight: '400' }"
+                  >
+                    {{ pages[currentPage].description }}
+                  </p>
+                  <v-btn
+                    color="#ffbd39"
+                    x-large
+                    class="mr-4"
+                    :style="{ color: '#000000' }"
+                    @click="handleCtaClick"
+                  >
+                    {{ pages[currentPage].cta }}
+                  </v-btn>
+                  <v-btn
+                    outlined
+                    x-large
+                    :style="{ borderColor: '#FFFFFF', color: '#000000' }"
+                    @click="scrollToSection('projects')"
+                  >
+                    MY WORKS
+                  </v-btn>
+                </div>
+              </transition>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+              class="d-none d-md-flex justify-center align-center"
+            >
+              <transition name="fade-slide" mode="out-in">
+                <v-img
+                  :key="currentPage"
+                  :src="pages[currentPage].image"
+                  alt="Lawrence Sabrido"
+                  max-height="600"
+                  contain
+                ></v-img>
+              </transition>
+            </v-col>
+          </v-row>
+        </v-container>
+      </section>
 
       <!-- About Section -->
       <section id="about" class="py-12" :style="{ background: '#000000' }">
         <v-container>
-          <h2 class="text-h2 font-weight-bold mb-6 text-center" :style="{ color: '#FFFFFF' }">About Me</h2>
+          <h2
+            class="text-h2 font-weight-bold mb-6 text-center"
+            :style="{ color: '#FFFFFF' }"
+          >
+            About Me
+          </h2>
           <v-row align="center" justify="space-between">
             <v-col cols="12" md="5">
               <v-img
@@ -131,28 +182,45 @@
               ></v-img>
             </v-col>
             <v-col cols="12" md="7">
-              <p class="text-body-1 mb-6" :style="{ color: '#FFFFFF' }">
-                I am a passionate web developer with a focus on creating sleek, responsive
-                websites that provide seamless user experiences. With a background in front-
-                end development, I specialize in HTML, CSS, JavaScript, and React,
-                constantly seeking to enhance my skills and stay updated with the latest
-                technologies.
+              <p
+                class="text-body-1 mb-6"
+                :style="{ color: '#938d8c', fontWeight: '400' }"
+              >
+                I am a passionate web developer with a focus on creating sleek,
+                responsive websites that provide seamless user experiences. With
+                a background in front- end development, I specialize in HTML,
+                CSS, JavaScript, and React, constantly seeking to enhance my
+                skills and stay updated with the latest technologies.
               </p>
               <v-list dense :style="{ background: 'transparent' }">
                 <v-list-item v-for="(value, key) in personalInfo" :key="key">
                   <v-list-item-content>
                     <v-list-item-title>
-                      <span class="info-label" :style="{ color: '#ffbd39', width: '120px', display: 'inline-block' }">{{ key }}:</span>
-                      <span :style="{ color: '#FFFFFF' }">{{ value }}</span>
+                      <span
+                        class="info-label"
+                        :style="{
+                          color: '#FFFFFF',
+                          width: '120px',
+                          display: 'inline-block',
+                          fontWeight: '600',
+                        }"
+                        >{{ key }}:</span
+                      >
+                      <span :style="{ color: '#938d8c', fontWeight: '400' }">{{
+                        value
+                      }}</span>
                     </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
               <div class="d-flex align-center mt-6">
                 <span class="text-h6" :style="{ color: '#ffbd39' }">
-                  <span ref="projectCounter">{{ displayedProjects }}</span> Project{{ displayedProjects !== 1 ? 's' : '' }} complete
+                  <span ref="projectCounter">{{ displayedProjects }}</span>
+                  Project{{ displayedProjects !== 1 ? "s" : "" }} complete
                 </span>
-                <v-icon :color="'#ffbd39'" class="ml-2">mdi-briefcase-check</v-icon>
+                <v-icon :color="'#ffbd39'" class="ml-2"
+                  >mdi-briefcase-check</v-icon
+                >
               </div>
               <v-btn
                 :color="'#ffbd39'"
@@ -161,7 +229,7 @@
                 :style="{ color: '#000000' }"
                 @click="downloadCV"
               >
-                DOWNLOAD CV
+                DOWNLOAD RESUME
               </v-btn>
             </v-col>
           </v-row>
@@ -171,25 +239,44 @@
       <!-- Services Section -->
       <section id="services" class="py-12" :style="{ background: '#000000' }">
         <v-container>
-          <h2 class="text-h2 font-weight-bold mb-6 text-center" :style="{ color: '#FFFFFF' }">Services</h2>
-          <p class="text-body-1 mb-8 text-center" :style="{ color: '#FFFFFF' }">
-            My services are centered on creating engaging, functional, and user-friendly websites that cater to modern standards and expectations.
+          <h2
+            class="text-h2 font-weight-bold mb-6 text-center"
+            :style="{ color: '#FFFFFF' }"
+          >
+            Services
+          </h2>
+          <p
+            class="text-body-1 mb-8 text-center"
+            :style="{ color: '#938d8c', fontWeight: '400' }"
+          >
+            My services are centered on creating engaging, functional, and
+            user-friendly websites that cater to modern standards and
+            expectations.
           </p>
           <v-row>
-            <v-col v-for="service in services" :key="service.title" cols="12" sm="6" md="4">
+            <v-col
+              v-for="service in services"
+              :key="service.title"
+              cols="12"
+              sm="6"
+              md="4"
+            >
               <v-hover v-slot="{ hover }">
                 <v-card
                   class="pa-4 text-center"
                   :elevation="hover ? 8 : 2"
                   :class="{ 'on-hover': hover }"
-                  :style="{ 
-                    background: service.title === 'UI/UX Design' ? '#ffbd39' : '#1E1E1E',
-                    color: service.title === 'UI/UX Design' ? '#000000' : '#FFFFFF'
-                  }"
+                  :style="{ background: '#1E1E1E', color: '#FFFFFF' }"
                 >
-                  <v-icon size="48" :color="service.title === 'UI/UX Design' ? '#000000' : '#ffbd39'" class="mb-4">{{ service.icon }}</v-icon>
-                  <h3 class="text-h5 font-weight-bold mb-2">{{ service.title }}</h3>
-                  <p>{{ service.description }}</p>
+                  <v-icon size="48" color="#ffbd39" class="mb-4">{{
+                    service.icon
+                  }}</v-icon>
+                  <h3 class="text-h5 font-weight-bold mb-2">
+                    {{ service.title }}
+                  </h3>
+                  <p :style="{ color: '#938d8c', fontWeight: '400' }">
+                    {{ service.description }}
+                  </p>
                 </v-card>
               </v-hover>
             </v-col>
@@ -200,32 +287,73 @@
       <!-- Projects Section -->
       <section id="projects" class="py-12">
         <v-container>
-          <h2 class="text-h2 font-weight-bold mb-6 text-center" :style="{ color: '#FFFFFF' }">Projects</h2>
+          <h2
+            class="text-h2 font-weight-bold mb-6 text-center"
+            :style="{ color: '#FFFFFF' }"
+          >
+            Projects
+          </h2>
+          <p
+            class="text-body-1 mb-8 text-center"
+            :style="{ color: '#938d8c', fontWeight: '400' }"
+          >
+            Our team has successfully delivered a variety of projects that
+            demonstrate our collective expertise in web development, software
+            engineering, and user-centric design.
+          </p>
           <v-row>
-            <v-col v-for="project in projects" :key="project.title" cols="12" md="4">
+            <v-col
+              v-for="project in projects"
+              :key="project.title"
+              cols="12"
+              md="4"
+            >
               <v-hover v-slot="{ hover }">
-                <v-card class="mx-auto" max-width="400" :elevation="hover ? 12 : 2" :class="{ 'on-hover': hover }" :style="{ background: '#1E1E1E', color: '#FFFFFF' }">
-                  <v-img :src="project.image" height="250px" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
-                    <v-card-title class="text-h5">{{ project.title }}</v-card-title>
+                <v-card
+                  class="mx-auto"
+                  max-width="400"
+                  :elevation="hover ? 12 : 2"
+                  :class="{ 'on-hover': hover }"
+                  :style="{ background: '#1E1E1E', color: '#FFFFFF' }"
+                >
+                  <v-img
+                    :src="project.image"
+                    height="250px"
+                    class="white--text align-end"
+                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                  >
+                    <v-card-title class="text-h5">{{
+                      project.title
+                    }}</v-card-title>
                   </v-img>
                   <v-card-text>
-                    <div >{{ project.description }}</div>
+                    <div>{{ project.description }}</div>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn :color="'#ffbd39'" text :href="project.link" target="_blank" :style="{ color: '#ffbd39' }">
+                    <v-btn
+                      :color="'#ffbd39'"
+                      text
+                      :href="project.link"
+                      target="_blank"
+                      :style="{ color: '#ffbd39' }"
+                    >
                       <v-icon left>mdi-open-in-new</v-icon>
                       View Project
                     </v-btn>
                     <v-spacer></v-spacer>
                     <v-btn icon @click="project.show = !project.show">
-                      <v-icon :color="'#ffbd39'">{{ project.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                      <v-icon :color="'#ffbd39'">{{
+                        project.show ? "mdi-chevron-up" : "mdi-chevron-down"
+                      }}</v-icon>
                     </v-btn>
                   </v-card-actions>
                   <v-expand-transition>
                     <div v-show="project.show">
                       <v-divider></v-divider>
                       <v-card-text :style="{ textAlign: 'justify' }">
-                        <v-icon :color="'#ffbd39'" small left>mdi-information</v-icon>
+                        <v-icon :color="'#ffbd39'" small left
+                          >mdi-information</v-icon
+                        >
                         {{ project.details }}
                       </v-card-text>
                     </div>
@@ -238,34 +366,48 @@
       </section>
 
       <!-- Skills Section -->
-  <section id="skills" class="py-12" :style="{ background: '#000000' }">
-    <v-container>
-      <h2 class="text-h2 font-weight-bold mb-6 text-center" :style="{ color: '#FFFFFF' }">My Skills</h2>
-      <p class="text-body-1 mb-8 text-center" :style="{ color: '#FFFFFF', maxWidth: '800px', margin: '0 auto' }">
-        I have a diverse set of web development and programming skills that enable me to build functional, dynamic websites and applications.
-      </p>
-      <v-row>
-        <v-col v-for="skill in skills" :key="skill.name" cols="12" sm="6">
-          <div class="d-flex align-center mb-2">
-            <v-icon :color="'#ffbd39'" class="mr-2">{{ skill.icon }}</v-icon>
-            <span class="text-h6" :style="{ color: '#FFFFFF' }">{{ skill.name }}</span>
-            <span class="ml-auto" :style="{ color: '#ffbd39' }">{{ skill.level }}%</span>
-          </div>
-          <div class="progress-bar-container">
-            <div 
-              class="progress-bar" 
-              :style="{ width: `${skill.level}%` }"
-              :aria-valuenow="skill.level"
-              :aria-valuemin="0"
-              :aria-valuemax="100"
-              role="progressbar"
-            ></div>
-          </div>
-        </v-col>
-      </v-row>
-    </v-container>
-  </section>
-
+      <section id="skills" class="py-12" :style="{ background: '#000000' }">
+        <v-container>
+          <h2
+            class="text-h2 font-weight-bold mb-6 text-center"
+            :style="{ color: '#FFFFFF' }"
+          >
+            Skills
+          </h2>
+          <p
+            class="text-body-1 mb-8 text-center"
+            :style="{ color: '#938d8c', fontWeight: '400' }"
+          >
+            I have a diverse set of web development and programming skills that
+            enable me to build functional, dynamic websites and applications.
+          </p>
+          <v-row>
+            <v-col v-for="skill in skills" :key="skill.name" cols="12" sm="6">
+              <div class="d-flex align-center mb-2">
+                <v-icon :color="'#ffbd39'" class="mr-2">{{
+                  skill.icon
+                }}</v-icon>
+                <span class="text-h6" :style="{ color: '#FFFFFF' }">{{
+                  skill.name
+                }}</span>
+                <span class="ml-auto" :style="{ color: '#ffbd39' }"
+                  >{{ skill.level }}%</span
+                >
+              </div>
+              <div class="progress-bar-container">
+                <div
+                  class="progress-bar"
+                  :style="{ width: `${skill.level}%` }"
+                  :aria-valuenow="skill.level"
+                  :aria-valuemin="0"
+                  :aria-valuemax="100"
+                  role="progressbar"
+                ></div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </section>
 
       <!-- Contact Section -->
       <section id="contact" class="py-12 contact-section">
@@ -278,10 +420,23 @@
           >
             <v-row class="fill-height" align="center" justify="center">
               <v-col cols="12" md="8" class="text-center">
-                <h2 class="text-h2 font-weight-bold mb-6 full-white-text" :style="{ color: '#FFFFFF' }">
-                  I'm <span class="highlight-text" :style="{ color: '#ffbd39'}">Available</span> for Freelancing
+                <h2
+                  class="text-h2 font-weight-bold mb-6 full-white-text"
+                  :style="{ color: '#FFFFFF' }"
+                >
+                  I'm
+                  <span class="highlight-text" :style="{ color: '#ffbd39' }"
+                    >Available</span
+                  >
+                  for Freelancing
                 </h2>
-                <p class="text-h5 mb-8 full-white-text" :style="{ color: '#FFFFFF' }">If you're looking for a dedicated and experienced developer to bring your ideas to life, let's connect!</p>
+                <p
+                  class="text-h5 mb-8 full-white-text"
+                  :style="{ color: '#FFFFFF' }"
+                >
+                  If you're looking for a dedicated and experienced developer to
+                  bring your ideas to life, let's connect!
+                </p>
                 <v-btn
                   color="#ffbd39"
                   x-large
@@ -296,95 +451,153 @@
         </v-container>
       </section>
 
-  <!-- Hire Me Dialog -->
-  <v-dialog
-  v-model="dialog"
-  max-width="400"
-  transition="dialog-bottom-transition"
->
-  <v-card class="hire-me-dialog">
-    <v-card-title class="headline text-center pa-6">
-      <span class="elegant-title" :style="{ color: '#ffbd39'}">Let's Connect</span>
-      <v-btn
-        icon
-        @click="dialog = false"
-        class="close-btn"
+      <!-- Hire Me Dialog -->
+      <v-dialog
+        v-model="dialog"  
+        max-width="400"
+        transition="dialog-bottom-transition"
       >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-card-title>
-    <v-card-text class="pt-6">
-      <v-row justify="center">
-        <v-col cols="12">
-          <div class="text-center mb-6">
-            <p class="subtitle-1">I'm excited to discuss how we can work together on your next project!</p>
-          </div>
-          <v-list class="contact-list">
-            <v-list-item
-              v-for="(item, index) in contactInfo"
-              :key="index"
-              :href="item.link"
-              target="_blank"
-              class="mb-4 contact-item"
+        <v-card class="hire-me-dialog">
+          <v-card-title class="headline text-center pa-6 position-relative">
+            <span class="elegant-title" :style="{ color: '#ffbd39' }"
+              >Let's Connect</span
             >
-              <v-list-item-icon class="mr-4">
-                <v-avatar size="40" :color="item.color">
-                  <v-icon dark>{{ item.icon }}</v-icon>
-                </v-avatar>
-              </v-list-item-icon>
-              <v-list-item-content class="text-center">
-                <v-list-item-title class="text-h6 font-weight-medium">{{ item.title }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
-</v-dialog>
+            <v-btn
+              icon
+              @click="dialog = false"
+              class="close-btn"
+              style="position: absolute; top: 8px; right: 8px; background: none; border: none;"
+            >
+              <v-icon large color="#ffbd39">mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="pt-6">
+            <v-row justify="center">
+              <v-col cols="12">
+                <div class="text-center mb-6">
+                  <p class="subtitle-1">
+                    I'm excited to discuss how we can work together on your next
+                    project!
+                  </p>
+                </div>
+                <v-row class="contact-list">
+                  <v-col
+                    v-for="(item, index) in contactInfo"
+                    :key="index"
+                    cols="6"
+                    class="text-center"
+                  >
+                    <v-btn
+                      :href="item.link"
+                      target="_blank"
+                      icon
+                      x-large
+                      :color="item.color"
+                      class="mb-2"
+                    >
+                      <v-icon large>{{ item.icon }}</v-icon>
+                    </v-btn>
+                    <div class="caption">{{ item.title }}</div>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-main>
 
     <v-footer :style="{ background: '#000000' }" class="py-4">
       <v-container>
         <v-row>
           <v-col cols="12" md="3">
-            <h3 class="text-h6 font-weight-bold  mb-4" :style="{ color: '#FFFFFF' }">About</h3>
-            <p :style="{ color: '#FFFFFF' }">Whether you have a project in mind or just want to chat about tech, I'm here to help! Feel free to reach out if you have any questions or if you're interested in collaborating.</p>
+            <h3
+              class="text-h6 font-weight-bold mb-4"
+              :style="{ color: '#FFFFFF' }"
+            >
+              About
+            </h3>
+            <p :style="{ color: '#938d8c', fontWeight: '400' }">
+              Whether you have a project in mind or just want to chat about
+              tech, I'm here to help! Feel free to reach out if you have any
+              questions or if you're interested in collaborating.
+            </p>
           </v-col>
           <v-col cols="12" md="3">
-            <h3 class="text-h6 font-weight-bold mb-4" :style="{ color: '#FFFFFF' }">Links</h3>
+            <h3
+              class="text-h6 font-weight-bold mb-4"
+              :style="{ color: '#FFFFFF' }"
+            >
+              Links
+            </h3>
             <v-list dense :style="{ background: 'transparent' }">
-              <v-list-item v-for="item in menuItems" :key="item.title" :href="item.href" link>
+              <v-list-item
+                v-for="item in menuItems"
+                :key="item.title"
+                :href="item.href"
+                link
+              >
                 <v-list-item-content>
-                  <v-list-item-title :style="{ color: '#FFFFFF' }">{{ item.title  }}</v-list-item-title>
+                  <v-list-item-title
+                    :style="{ color: '#938d8c', fontWeight: '400' }"
+                    >{{ item.title }}</v-list-item-title
+                  >
                 </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-col>
           <v-col cols="12" md="3">
-            <h3 class="text-h6 font-weight-bold mb-4" :style="{ color: '#FFFFFF' }">Services</h3>
+            <h3
+              class="text-h6 font-weight-bold mb-4"
+              :style="{ color: '#FFFFFF' }"
+            >
+              Services
+            </h3>
             <v-list dense :style="{ background: 'transparent' }">
               <v-list-item v-for="service in services" :key="service.title">
                 <v-list-item-content>
-                  <v-list-item-title :style="{ color: '#FFFFFF' }">{{ service.title }}</v-list-item-title>
+                  <v-list-item-title
+                    :style="{ color: '#938d8c', fontWeight: '400' }"
+                    >{{ service.title }}</v-list-item-title
+                  >
                 </v-list-item-content>
               </v-list-item>
             </v-list>
           </v-col>
           <v-col cols="12" md="3">
-            <h3 class="text-h6 font-weight-bold mb-4" :style="{ color: '#FFFFFF' }">Have Questions?</h3>
-            <p :style="{ color: '#FFFFFF' }">203 Taglatawan St, Bayugan City, Agusan Del Sur, PH</p>
-            <p :style="{ color: '#FFFFFF' }">+2 392 3929 210</p>
-            <p :style="{ color: '#FFFFFF' }">renzsabrido1@gmail.com</p>
+            <h3
+              class="text-h6 font-weight-bold mb-4"
+              :style="{ color: '#FFFFFF' }"
+            >
+              Have Questions?
+            </h3>
+            <p :style="{ color: '#938d8c', fontWeight: '400' }">
+              203 Taglatawan St, Bayugan City, Agusan Del Sur, PH
+            </p>
+            <p :style="{ color: '#938d8c', fontWeight: '400' }">
+              +2 392 3929 210
+            </p>
+            <p :style="{ color: '#938d8c', fontWeight: '400' }">
+              renzsabrido1@gmail.com
+            </p>
           </v-col>
         </v-row>
         <v-divider class="my-4" :style="{ background: '#FFFFFF' }"></v-divider>
         <v-row align="center" justify="space-between">
           <v-col cols="12" md="6" class="text-center text-md-left">
-            <span :style="{ color: '#FFFFFF' }">© {{ new Date().getFullYear() }} All rights reserved.</span>
+            <span :style="{ color: '#FFFFFF' }"
+              >© {{ new Date().getFullYear() }} All rights reserved.</span
+            >
           </v-col>
           <v-col cols="12" md="6" class="text-center text-md-right">
-            <v-btn v-for="icon in socialIcons" :key="icon.name" :href="icon.link" target="_blank" icon class="mx-2">
+            <v-btn
+              v-for="icon in socialIcons"
+              :key="icon.name"
+              :href="icon.link"
+              target="_blank"
+              icon
+              class="mx-2"
+            >
               <v-icon :color="'#ffbd39'">{{ icon.icon }}</v-icon>
             </v-btn>
           </v-col>
@@ -395,94 +608,98 @@
 </template>
 
 <script>
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from "vue";
 
 export default {
-  name: 'App',
+  name: "App",
   setup() {
     const menuItems = [
-      { title: 'Home', href: '#home' },
-      { title: 'About', href: '#about' },
-      { title: 'Services', href: '#services' }, 
-      { title: 'Projects', href: '#projects' },
-      { title: 'Skills', href: '#skills' },
-      { title: 'Contact', href: '#contact' },
-    ]
+      { title: "Home", href: "#home" },
+      { title: "About", href: "#about" },
+      { title: "Services", href: "#services" },
+      { title: "Projects", href: "#projects" },
+      { title: "Skills", href: "#skills" },
+      { title: "Contact", href: "#contact" },
+    ];
 
     const handleCtaClick = () => {
       if (currentPage.value === 0) {
-        scrollToSection('contact');
+        scrollToSection("contact");
       } else {
-        scrollToSection('contact');
+        scrollToSection("contact");
       }
     };
 
-    const isMenuOpen = ref(false)
-    const activeSection = ref('home')
-    const dialog = ref(false)
-    const isScrolled = ref(false)
+    const isMenuOpen = ref(false);
+    const activeSection = ref("home");
+    const dialog = ref(false);
+    const isScrolled = ref(false);
 
     const scrollToSection = (sectionId) => {
-      const element = document.getElementById(sectionId)
+      const element = document.getElementById(sectionId);
       if (element) {
-        isMenuOpen.value = false
+        isMenuOpen.value = false;
         setTimeout(() => {
-          const navbarHeight = document.querySelector('.v-app-bar').offsetHeight
-          const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
-          const offsetPosition = elementPosition - navbarHeight
+          const navbarHeight =
+            document.querySelector(".v-app-bar").offsetHeight;
+          const elementPosition =
+            element.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = elementPosition - navbarHeight;
 
           window.scrollTo({
             top: offsetPosition,
-            behavior: 'smooth'
-          })
-          
+            behavior: "smooth",
+          });
+
           // Set the active section immediately after scrolling
-          activeSection.value = sectionId
-        }, 300)
+          activeSection.value = sectionId;
+        }, 300);
       }
-    }
+    };
 
     const handleScroll = () => {
-      const sections = menuItems.map(item => item.href.substring(1))
-      let currentSection = ''
-      
+      const sections = menuItems.map((item) => item.href.substring(1));
+      let currentSection = "";
+
       for (const section of sections) {
-        const element = document.getElementById(section)
+        const element = document.getElementById(section);
         if (element) {
-          const rect = element.getBoundingClientRect()
+          const rect = element.getBoundingClientRect();
           if (rect.top <= 100 && rect.bottom > 100) {
-            currentSection = section
-            break
+            currentSection = section;
+            break;
           }
         }
       }
-      
+
       if (currentSection) {
-        activeSection.value = currentSection
+        activeSection.value = currentSection;
       }
-      isScrolled.value = window.scrollY > 50
-    }
+      isScrolled.value = window.scrollY > 50;
+    };
 
     onMounted(() => {
-      window.addEventListener('scroll', handleScroll)
-      handleScroll() // Initial check
-    })
+      window.addEventListener("scroll", handleScroll);
+      handleScroll(); // Initial check
+    });
 
     const currentPage = ref(0);
     const pages = [
       {
-        title: "I'm Lawrence",
-        subtitle: "HELLO!",
-        description: "An Information Technology Student",
+        title: `<span style="color: white;">I'm</span> <span style="color: #ffbd39;">Lawrence <br> Aves Sabrido</span>`,
+        subtitle: "H E L L O !",
+        description: "A Junior Web Developer",
         cta: "HIRE ME",
-        image: '/images/me.png'
+        image: "/images/me.png",
+        isHtml: true,
       },
       {
         title: "Let's Work Together",
-        subtitle: "Building the Future",
+        subtitle: "BUILDING THE FUTURE",
         description: "I'm passionate about web development and technology.",
         cta: "CONTACT ME",
-        image: '/images/bg_2.jpg'
+        image: "/images/bg_2.jpg",
+        isHtml: false,
       },
     ];
 
@@ -494,139 +711,226 @@ export default {
     });
 
     const projects = reactive([
-  {
-    title: 'Text-Based Game',
-    description: 'A digital platform that offers engaging text-based adventures where users can make choices that influence the storyline.',
-    details: 'Built with JavaScript for game logic, allowing players to navigate through different story paths based on their choices. Features include dynamic responses and AI-powered story progression.',
-    image: '/images/project-1.png',
-    link: 'https://example.com/text-based-game',
-    show: false,
-  },
-  {
-    title: 'Calculator',
-    description: 'A Calculator application that performs basic arithmetic operations with a user-friendly interface and basic UI design.',
-    details: 'Built using HTML, CSS, and JavaScript. Features basic arithmetic functions and error handling for user-friendly calculations.',
-    image: '/images/project-4.png',
-    link: 'https://example.com/calculator',
-    show: false,
-  },
-  {
-    title: 'Attendance Management System',
-    description: 'An Attendance Management System that helps track and manage attendance records for students or employees.',
-    details: 'Developed with Laravel and SQL for backend functionality. Allows users to track attendance, view logs, and generate reports with data visualization.',
-    image: '/images/project-5.png',
-    link: 'https://example.com/attendance-system',
-    show: false,
-  },
-])
-    
+      {
+        title: "Text-Based Game",
+        description:
+          "A digital platform that offers engaging text-based adventures where users can make choices that influence the storyline.",
+        details:
+          "Built with JavaScript for game logic, allowing players to navigate through different story paths based on their choices. Features include dynamic responses and AI-powered story progression.",
+        image: "/images/project-1.png",
+        link: "https://github.com/Caeilanlightwood77/text-based-game",
+        show: false,
+      },
+      {
+        title: "Calculator",
+        description:
+          "A Calculator application that performs basic arithmetic operations with a user-friendly interface and basic UI design.",
+        details:
+          "Built using HTML, CSS, and JavaScript. Features basic arithmetic functions and error handling for user-friendly calculations.",
+        image: "/images/project-4.png",
+        link: "https://github.com/Caeilanlightwood77/simple_calculator",
+        show: false,
+      },
+      {
+        title: "Attendance Management System",
+        description:
+          "An Attendance Management System that helps track and manage attendance records for students or employees.",
+        details:
+          "Developed with Laravel and SQL for backend functionality. Allows users to track attendance, view logs, and generate reports with data visualization.",
+        image: "/images/project-5.png",
+        link: "https://example.com/attendance-system",
+        show: false,
+      },
+      {
+        title: "To Do List",
+        description:
+          "A user-friendly To-Do List app that helps individuals efficiently organize, manage, and track their tasks with ease.",
+        details:
+          "Built with Vue.js for a responsive and dynamic user interface, this app allows users to create, edit, and prioritize tasks. It supports tracking task progress and includes a simple, intuitive design for easy task management.",
+        image: "/images/ToDo.png",
+        link: "https://vue-to-do-list-activity.vercel.app/",
+        show: false,
+      },
+      {
+        title: "Weather App",
+        description:
+          "A simple, user-friendly weather app that allows users to check current weather conditions and forecasts for any location.",
+        details:
+          "Built with Vue.js, this app provides real-time weather information including temperature, humidity, etc. It features an intuitive interface for easy navigation and offers detailed weather data for locations worldwide.",
+        image: "/images/Weather.png",
+        link: "https://simple-weather-app-six-henna.vercel.app/",
+        show: false,
+      },
+    ]);
+
     const skills = reactive([
-      { name: 'HTML', icon: 'mdi-language-html5', level: 0 },
-      { name: 'CSS', icon: 'mdi-language-css3', level: 0 },
-      { name: 'BOOTSTRAP', icon: 'mdi-bootstrap', level: 0 },
-      { name: 'LARAVEL', icon: 'mdi-laravel', level: 0 },
-      { name: 'SQL', icon: 'mdi-database', level: 0 },
-      { name: 'JAVA', icon: 'mdi-language-java', level: 0 },
-    ])
+      { name: "HTML", icon: "mdi-language-html5", level: 0 },
+      { name: "CSS", icon: "mdi-language-css3", level: 0 },
+      { name: "BOOTSTRAP", icon: "mdi-bootstrap", level: 0 },
+      { name: "LARAVEL", icon: "mdi-laravel", level: 0 },
+      { name: "SQL", icon: "mdi-database", level: 0 },
+      { name: "JAVA", icon: "mdi-language-java", level: 0 },
+    ]);
 
     const finalSkillLevels = [
-      { name: 'HTML', level: 80 },
-      { name: 'CSS', level: 85 },
-      { name: 'BOOTSTRAP', level: 75 },
-      { name: 'LARAVEL', level: 70 },
-      { name: 'SQL', level: 75 },
-      { name: 'JAVA', level: 80 },
-    ]
+      { name: "HTML", level: 80 },
+      { name: "CSS", level: 85 },
+      { name: "BOOTSTRAP", level: 75 },
+      { name: "LARAVEL", level: 70 },
+      { name: "SQL", level: 75 },
+      { name: "JAVA", level: 80 },
+    ];
 
     onMounted(() => {
       setTimeout(() => {
         skills.forEach((skill, index) => {
-          const targetLevel = finalSkillLevels[index].level
-          const duration = 1500 
-          const steps = 60
-          const increment = targetLevel / steps
-          let currentStep = 0
+          const targetLevel = finalSkillLevels[index].level;
+          const duration = 1500;
+          const steps = 60;
+          const increment = targetLevel / steps;
+          let currentStep = 0;
 
           const intervalId = setInterval(() => {
             if (currentStep < steps) {
-              skill.level = Math.min(Math.round(increment * (currentStep + 1)), targetLevel)
-              currentStep++
+              skill.level = Math.min(
+                Math.round(increment * (currentStep + 1)),
+                targetLevel
+              );
+              currentStep++;
             } else {
-              clearInterval(intervalId)
+              clearInterval(intervalId);
             }
-          }, duration / steps)
-        })
-      }, 500)
-    })
+          }, duration / steps);
+        });
+      }, 500);
+    });
 
     const contactInfo = [
-      { title: 'Facebook', icon: 'mdi-facebook', color: '#1877F2', link: 'https://www.facebook.com/angel.sabrido' },
-      { title: 'GitHub', icon: 'mdi-github', color: '#333', link: 'https://github.com/Renshmackle' },
-      { title: 'LinkedIn', icon: 'mdi-linkedin', color: '#0A66C2', link: 'https://www.linkedin.com/in/renz-sabrido-53077318a' },
-      { title: 'Instagram', icon: 'mdi-instagram', color: '#E4405F', link: 'https://www.instagram.com/rnzz_brdzz/' },
-    ] 
+      {
+        title: "Facebook",
+        icon: "mdi-facebook",
+        color: "#1877F2",
+        link: "https://www.facebook.com/angel.sabrido",
+      },
+      {
+        title: "GitHub",
+        icon: "mdi-github",
+        color: "#333",
+        link: "https://github.com/Renshmackle",
+      },
+      {
+        title: "LinkedIn",
+        icon: "mdi-linkedin",
+        color: "#0A66C2",
+        link: "https://www.linkedin.com/in/renz-sabrido-53077318a",
+      },
+      {
+        title: "Instagram",
+        icon: "mdi-instagram",
+        color: "#E4405F",
+        link: "https://www.instagram.com/rnzz_brdzz/",
+      },
+    ];
 
     const socialIcons = [
-      { name: 'GitHub', icon: 'mdi-github', link: 'https://github.com/Renshmackle' },
-      { name: 'LinkedIn', icon: 'mdi-linkedin', link: 'https://www.linkedin.com/in/renz-sabrido-53077318a' },
-      { name: 'Twitter', icon: 'mdi-twitter', link: 'https://twitter.com' },
-    ]
+      {
+        name: "GitHub",
+        icon: "mdi-github",
+        link: "https://github.com/Renshmackle",
+      },
+      {
+        name: "LinkedIn",
+        icon: "mdi-linkedin",
+        link: "https://www.linkedin.com/in/renz-sabrido-53077318a",
+      },
+      { name: "Twitter", icon: "mdi-twitter", link: "https://twitter.com" },
+    ];
 
     const personalInfo = {
-      'Name':  'Lawrence Sabrido',
-      'Date of birth': 'October 15, 2003',
-      'Address': 'Barangay Taglatawan, Bayugan City, PH',
-      'Zip code': '8502',
-      'Email': 'renzsabrido1@gmail.com',
-      'Phone': '+639 7589',
-    }
+      Name: "Lawrence Sabrido",
+      "Date of birth": "October 15, 2003",
+      Address: "Barangay Taglatawan, Bayugan City, PH",
+      "Zip code": "8502",
+      Email: "renzsabrido1@gmail.com",
+      Phone: "+639 7589",
+    };
 
-    const projectsCompleted = 3
-    const displayedProjects = ref(0)
+    const projectsCompleted = 3;
+    const displayedProjects = ref(0);
 
     const downloadCV = () => {
-      const link = document.createElement('a');
-      link.href = '/Sab_Resume.pdf';
-      link.download = 'Lawrence_Sabrido_CV.pdf';
+      const link = document.createElement("a");
+      link.href = "/Sab_Resume.pdf";
+      link.download = "Lawrence_Sabrido_CV.pdf";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      console.log('Downloading CV...')
-    }
+      console.log("Downloading CV...");
+    };
 
     onMounted(() => {
-      const duration = 2000 
-      const steps = 30 
-      const stepDuration = duration / steps
+      const duration = 2000;
+      const steps = 30;
+      const stepDuration = duration / steps;
 
       const animate = () => {
-        let currentStep = 0
+        let currentStep = 0;
         const intervalId = setInterval(() => {
           if (currentStep < steps) {
-            displayedProjects.value = Math.floor(Math.random() * 10)
-            currentStep++
+            displayedProjects.value = Math.floor(Math.random() * 10);
+            currentStep++;
           } else {
-            clearInterval(intervalId)
-            displayedProjects.value = projectsCompleted
+            clearInterval(intervalId);
+            displayedProjects.value = projectsCompleted;
           }
-        }, stepDuration)
-      }
+        }, stepDuration);
+      };
 
-      animate()
-    })
+      animate();
+    });
 
     onUnmounted(() => {
-      window.removeEventListener('scroll', handleScroll)
-    })
+      window.removeEventListener("scroll", handleScroll);
+    });
 
     const services = [
-      { title: 'Web Design', icon: 'mdi-palette', description: 'Creating visually appealing and user-friendly website designs.' },
-      { title: 'UI/UX Design', icon: 'mdi-pencil-ruler', description: 'Designing intuitive user interfaces and seamless user experiences.' },
-      { title: 'Web Development', icon: 'mdi-code-tags', description: 'Building responsive and dynamic websites using modern technologies.' },
-      { title: 'App Development', icon: 'mdi-cellphone', description: 'Developing mobile applications for iOS and Android platforms.' },
-      { title: 'Website Maintenance', icon: 'mdi-cog', description: 'Providing ongoing support and updates for existing websites.' },
-      { title: 'Consulting Services', icon: 'mdi-account-group', description: 'Offering expert advice on web technologies and best practices.' },
-    ]
+      {
+        title: "Web Design",
+        icon: "mdi-palette",
+        description:
+          "Creating visually appealing and user-friendly website designs.",
+      },
+      {
+        title: "UI/UX Design",
+        icon: "mdi-pencil-ruler",
+        description:
+          "Designing intuitive user interfaces and seamless user experiences.",
+      },
+      {
+        title: "Web Development",
+        icon: "mdi-code-tags",
+        description:
+          "Building responsive and dynamic websites using modern technologies.",
+      },
+      {
+        title: "App Development",
+        icon: "mdi-cellphone",
+        description:
+          "Developing mobile applications for iOS and Android platforms.",
+      },
+      {
+        title: "Website Maintenance",
+        icon: "mdi-cog",
+        description:
+          "Providing ongoing support and updates for existing websites.",
+      },
+      {
+        title: "Consulting Services",
+        icon: "mdi-account-group",
+        description:
+          "Offering expert advice on web technologies and best practices.",
+      },
+    ];
 
     return {
       menuItems,
@@ -636,8 +940,8 @@ export default {
       isMenuOpen,
       projects,
       skills,
-      currentPage, 
-      pages,  
+      currentPage,
+      pages,
       dialog,
       contactInfo,
       socialIcons,
@@ -646,19 +950,38 @@ export default {
       displayedProjects,
       services,
       downloadCV,
-      isScrolled
-    }
+      isScrolled,
+    };
   },
-}
+};
 </script>
 
 <style>
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Bowlby One', sans-serif !important;
+.v-toolbar-title {
+  font-family: "Bungee Hairline", sans-serif !important;
+  font-weight: 400;
+  font-style: normal;
+  color: #ffffff;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 800;
+  font-style: normal;
 }
 
 p {
-  font-family: Arial, sans-serif;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.v-app-bar,
+.v-btn {
+  font-family: "Poppins", sans-serif !important;
 }
 
 .v-app-bar {
@@ -681,13 +1004,13 @@ p {
 }
 
 .nav-btn::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
   width: 0;
   height: 2px;
-  background: #FFFFFF;
+  background: #ffffff;
   transition: all 0.3s ease;
 }
 
@@ -721,12 +1044,13 @@ p {
 
 .mobile-menu-list {
   background: transparent !important;
-  width: 100vw;
 }
 
 .mobile-menu-item {
-  color: #FFFFFF !important;
+  font-family: "Poppins", sans-serif !important;
+  color: #ffffff !important;
   transition: color 0.3s ease;
+  padding: 8px 0;
 }
 
 .mobile-menu-item:hover {
@@ -756,23 +1080,25 @@ p {
   overflow: hidden;
 }
 
-.fade-slide-enter-active, .fade-slide-leave-active {
+.fade-slide-enter-active,
+.fade-slide-leave-active {
   transition: all 0.8s ease;
 }
-.fade-slide-enter, .fade-slide-leave-to {
+.fade-slide-enter,
+.fade-slide-leave-to {
   opacity: 0;
   transform: translateY(20px);
 }
 
-@media (max-width: 960px) {
+@media (max-width: 600px) {
   .hero {
-    background-image: url('../public/images/me.png');
+    background-image: url("../public/images/me.png");
     background-size: cover;
     background-position: center;
   }
 
   .hero::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -785,6 +1111,19 @@ p {
     position: relative;
     z-index: 1;
   }
+
+  .v-list-item__title {
+    font-size: 1rem !important;
+  }
+
+  .mobile-menu-item {
+    padding: 6px 0;
+  }
+
+  .close-btn {
+    top: 10px;
+    right: 10px;
+  }
 }
 
 .yellow--text {
@@ -792,9 +1131,11 @@ p {
 }
 
 .v-list-item__title {
+  font-family: "Poppins", sans-serif !important;
   color: white !important;
   font-size: 1.1rem !important;
-  padding: 12px 0;
+  font-weight: 200;
+  transition: color 0.3s ease;
 }
 
 .menu-item {
@@ -806,17 +1147,6 @@ p {
 
 .menu-item:hover {
   background-color: rgba(255, 189, 57, 0.1);
-}
-
-.mobile-menu-overlay {
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.8) !important;
-  backdrop-filter: blur(10px);
-}
-
-.mobile-menu-list {
-  background: transparent !important;
-  width: 100vw;
 }
 
 .v-overlay__content {
@@ -870,14 +1200,18 @@ p {
 .hire-me-dialog {
   background-color: rgba(30, 30, 30, 0.8);
   backdrop-filter: blur(10px);
-  color: #FFFFFF;
+  color: #ffffff;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
 }
 
 .hire-me-dialog .v-card__title {
-  background: linear-gradient(135deg, rgba(255, 189, 57, 0.8) 0%, rgba(255, 157, 0, 0.8) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 189, 57, 0.8) 0%,
+    rgba(255, 157, 0, 0.8) 100%
+  );
   color: #000000;
   position: relative;
 }
@@ -888,7 +1222,6 @@ p {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-
 
 .hire-me-dialog .v-list {
   background-color: transparent;
@@ -920,11 +1253,6 @@ p {
   flex: 1;
   display: flex;
   justify-content: center;
-}
-
-.v-list-item__title {
-  color: #FFFFFF;
-  font-weight: 500;
 }
 
 .hire-me-btn {
